@@ -28,8 +28,7 @@ namespace DotNetCoreSqlDb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<MyDatabaseContext>(options =>
-                    options.UseSqlite("Data Source=localdatabase.db"));
+            services.AddDbContext<MyDatabaseContext>(options => options.UseSqlServer("Server=tcp:robotdbtestserver.database.windows.net,1433;Database=coreDB;User ID=jatler;Password=G1raffe$;Encrypt=true;Connection Timeout=30;"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
