@@ -14,5 +14,6 @@ namespace DotNetCoreSqlDb.Models
         }
 
         public DbSet<DotNetCoreSqlDb.Models.Todo> Todo { get; set; }
+        public DbSet<DotNetCoreSqlDb.Models.Inventory> Inventory { get; set; }
     }
 }
