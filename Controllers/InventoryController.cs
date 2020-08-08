@@ -55,7 +55,7 @@ namespace DotNetCoreSqlDb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,Quantity,Location")] Inventory inventory)
+        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace DotNetCoreSqlDb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,Quantity,Location")] Inventory inventory)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location")] Inventory inventory)
         {
             Console.WriteLine("Inventory edit");
 
