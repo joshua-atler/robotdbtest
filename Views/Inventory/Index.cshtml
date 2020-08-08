@@ -1,4 +1,12 @@
 ﻿@model IEnumerable<DotNetCoreSqlDb.Models.Inventory>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#inventory-table').DataTable();
+        });
+    </script>
+}
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +17,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="inventory-table">
     <thead>
         <tr>
             <th>
