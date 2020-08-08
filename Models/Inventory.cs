@@ -15,9 +15,9 @@ namespace DotNetCoreSqlDb.Models
         [Display(Name = "Part Type")]
         public string PartType { get; set; }
 
-        public int Quantity { get; set; }
-
         public string SKU { get; set; }
+
+        public int Quantity { get; set; }
 
         [Display(Name = "Unit Cost")]
         public decimal UnitCost { get; set; }
