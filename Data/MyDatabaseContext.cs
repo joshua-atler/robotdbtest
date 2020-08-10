@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotNetCoreSqlDb.Models
 {
-    public class MyDatabaseContext : DbContext
+    public class MyDatabaseContext : IdentityDbContext
     {
         public MyDatabaseContext (DbContextOptions<MyDatabaseContext> options)
             : base(options)

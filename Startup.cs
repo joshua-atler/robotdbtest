@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using DotNetCoreSqlDb.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DotNetCoreSqlDb
 {
@@ -29,6 +30,15 @@ namespace DotNetCoreSqlDb
         {
             services.AddControllersWithViews();
             services.AddDbContext<MyDatabaseContext>(options => options.UseSqlServer("Server=tcp:robotdbtestserver.database.windows.net,1433;Database=coreDB;User ID=jatler;Password=G1raffe$;Encrypt=true;Connection Timeout=30;"));
+
+            services.AddIdentity<IdentityUser, IdentityRole>(config =>
+            {
+                config.Password.RequiredLength = 4;
+                config.Password.RequireDigit = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequireUppercase = false;
+            }
+            ).AddEntityFrameworkStores<MyDatabaseContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

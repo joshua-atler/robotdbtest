@@ -1,0 +1,20 @@
+﻿@* @model DotNetCoreSqlDb.Models.Login; *@
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Login</h1>
+<hr />
+
+<form asp-action="Login" method="post">
+    <p>User type:</p>
+    <select name="UserType">
+        <option value="Admin">Admin</option>
+        <option value="Student">Student</option>
+    </select>
+    <br /><br />
+    <input type="password" name="Password" />
+    <br /><br />
+    <button type="submit" value="save">Login</button>
+</form>
