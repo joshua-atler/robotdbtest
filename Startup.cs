@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using DotNetCoreSqlDb.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetCoreSqlDb
 {
@@ -37,13 +38,25 @@ namespace DotNetCoreSqlDb
                 config.Password.RequireDigit = false;
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequireUppercase = false;
-            }
-            ).AddEntityFrameworkStores<MyDatabaseContext>();
+
+                // config.SignIn.RequireConfirmedAccount = true;
+            } 
+            ).AddRoles<IdentityRole>().AddEntityFrameworkStores<MyDatabaseContext>();
+
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Login";
             });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
