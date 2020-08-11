@@ -54,6 +54,7 @@ namespace DotNetCoreSqlDb
             services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Login";
+                config.AccessDeniedPath = "/Login/AccessDenied";
             });
 
 
