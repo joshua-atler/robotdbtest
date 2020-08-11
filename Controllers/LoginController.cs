@@ -48,28 +48,9 @@ namespace DotNetCoreSqlDb.Controllers
             Console.WriteLine("usertype");
             Console.WriteLine(usertype);
             Console.WriteLine(password);
-            
-            // var user = await _userManager.FindByNameAsync(usertype);
 
 
-            /*if (user != null)
-            {
-                Console.WriteLine("found user");
-                var signInResult = await _signInManager.PasswordSignInAsync(usertype, password, false, false);
-
-                if (signInResult.Succeeded)
-                {
-                    return RedirectToAction("Index", "Inventory");
-                } else
-                {
-                    return RedirectToAction("Index", "Todos");
-                }
-            }*/
-
-
-            Console.WriteLine("user is null");
-
-            var user = new IdentityUser
+            /*var user = new IdentityUser
             {
                 UserName = usertype,
             };
@@ -80,29 +61,43 @@ namespace DotNetCoreSqlDb.Controllers
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
 
+
                 if (signInResult.Succeeded)
                 {
                     Console.WriteLine("Account created");
                     return RedirectToAction("Index", "Inventory");
                 }
+
             }
 
-            return RedirectToAction("Index");
-            
+            return RedirectToAction("Index");*/
 
-            /*
-            if (usertype == "Admin" && password == "AdminPassword")
-            {
-                return RedirectToAction("Index", "Inventory");
 
-            } else if (usertype == "Student" && password == "StudentPassword")
+            var user = await _userManager.FindByNameAsync(usertype);
+
+            if (user != null)
             {
-                return RedirectToAction("Index", "Inventory");
-            } else
-            {
-                return RedirectToAction("Index");
+                var signInResult = await _signInManager.PasswordSignInAsync(usertype, password, false, false);
+
+                if (signInResult.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                } else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            */
+
+
+            return RedirectToAction("Index", "Login");
+
+
+        }
+
+        public async Task<ActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

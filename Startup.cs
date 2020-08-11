@@ -39,6 +39,11 @@ namespace DotNetCoreSqlDb
                 config.Password.RequireUppercase = false;
             }
             ).AddEntityFrameworkStores<MyDatabaseContext>();
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Login";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +64,8 @@ namespace DotNetCoreSqlDb
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
