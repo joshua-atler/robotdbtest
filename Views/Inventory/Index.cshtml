@@ -1,15 +1,25 @@
 ﻿@model IEnumerable<DotNetCoreSqlDb.Models.Inventory>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 @section Scripts
 {
     <script>
         $(document).ready(function () {
             $('#inventory-table').DataTable();
         });
+
+        $('#inventory-table').dataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": -1 }
+            ]
+        });
     </script>
 }
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Inventory";
 }
 
 <h1>Index</h1>
@@ -24,10 +34,10 @@
                 @Html.DisplayNameFor(model => model.PartName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PartType)
+                @Html.DisplayNameFor(model => model.SKU)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SKU)
+                @Html.DisplayNameFor(model => model.PartType)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Quantity)
@@ -36,44 +46,63 @@
                 @Html.DisplayNameFor(model => model.UnitCost)
             </th>
             <th>
-                Total Cost
+                @Html.DisplayNameFor(model => model.TotalCost)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Location)
             </th>
+            @if (Context.User.IsInRole("Business"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+            }
+            
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SKU)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                $@Html.DisplayFor(modelItem => item.UnitCost)
-            </td>
-            <td>
-                $@Html.DisplayFor(modelItem => item.TotalCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            @if (Context.User.IsInRole("Business") || item.Status == Inventory.InventoryStatus.Approved)
+            {
+                <tr>
+                    <td>
+                       @Html.DisplayFor(modelItem => item.PartName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SKU)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PartType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.UnitCost)
+                    </td>
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.TotalCost)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    @if (Context.User.IsInRole("Business"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                    }
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        
+        }
     </tbody>
 </table>

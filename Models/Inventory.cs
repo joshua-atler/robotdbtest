@@ -12,10 +12,10 @@ namespace DotNetCoreSqlDb.Models
         [Display(Name = "Part Name")]
         public string PartName { get; set; }
 
+        public string SKU { get; set; }
+
         [Display(Name = "Part Type")]
         public string PartType { get; set; }
-
-        public string SKU { get; set; }
 
         public int Quantity { get; set; }
 
@@ -24,7 +24,20 @@ namespace DotNetCoreSqlDb.Models
 
         public string Location { get; set; }
 
-        
+        public InventoryStatus Status { get; set; }
+
+
+        public enum InventoryStatus
+        {
+            [Display(Name = "Submitted")]
+            Submitted,
+            [Display(Name = "Approved")]
+            Approved,
+            [Display(Name = "Rejected")]
+            Rejected
+        }
+
+
         public decimal TotalCost {
             get
             {

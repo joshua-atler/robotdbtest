@@ -60,11 +60,23 @@ namespace DotNetCoreSqlDb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location")] Inventory inventory)
+        [Authorize(Roles = "Business")]
+        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location,Status")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
+                if(HttpContext.User.IsInRole("Admin"))
+                {
+                    inventory.Status = Inventory.InventoryStatus.Approved;
+                } else
+                {
+                    inventory.Status = Inventory.InventoryStatus.Submitted;
+                }
+                
+                Console.WriteLine("status");
+                Console.WriteLine(inventory.Status);
+
+
                 _context.Add(inventory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -95,7 +107,7 @@ namespace DotNetCoreSqlDb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Business")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location")] Inventory inventory)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location,Status")] Inventory inventory)
         {
             Console.WriteLine("Inventory edit");
 
