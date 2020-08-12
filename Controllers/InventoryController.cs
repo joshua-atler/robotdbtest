@@ -47,7 +47,7 @@ namespace DotNetCoreSqlDb.Controllers
         }
 
         // GET: Inventory/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Business")]
         public IActionResult Create()
         {
             Console.WriteLine("Inventory create");
@@ -88,12 +88,14 @@ namespace DotNetCoreSqlDb.Controllers
         [Authorize(Roles = "Business")]
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var inventory = await _context.Inventory.FindAsync(id);
+            ViewData["status"] = inventory.Status;
             if (inventory == null)
             {
                 return NotFound();
