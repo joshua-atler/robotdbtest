@@ -63,9 +63,21 @@
         {
             @if (Context.User.IsInRole("Business") || item.Status == Inventory.InventoryStatus.Approved)
             {
+                string style = "";
+                if(item.Status == Inventory.InventoryStatus.Approved)
+                {
+                    style = "background-color:#44ff44";
+                }
+                else if(item.Status == Inventory.InventoryStatus.Submitted)
+                {
+                    style = "background-color:#ffff44";
+                } else if (item.Status == Inventory.InventoryStatus.Rejected)
+                {
+                    style = "background-color:#ff4444";
+                }
                 <tr>
                     <td>
-                       @Html.DisplayFor(modelItem => item.PartName)
+                        @Html.DisplayFor(modelItem => item.PartName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.SKU)
@@ -87,7 +99,7 @@
                     </td>
                     @if (Context.User.IsInRole("Business"))
                     {
-                        <td>
+                        <td style="@style">
                             @Html.DisplayFor(modelItem => item.Status)
                         </td>
                     }
@@ -99,7 +111,7 @@
                     </td>
                 </tr>
             }
-        
+
         }
     </tbody>
 </table>

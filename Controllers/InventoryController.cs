@@ -96,6 +96,12 @@ namespace DotNetCoreSqlDb.Controllers
 
             var inventory = await _context.Inventory.FindAsync(id);
             ViewData["status"] = inventory.Status;
+
+            if (!HttpContext.User.IsInRole("Admin") && inventory.Status == Inventory.InventoryStatus.Rejected)
+            {
+                return RedirectToAction("AccessDenied", "Login");
+            }
+
             if (inventory == null)
             {
                 return NotFound();
