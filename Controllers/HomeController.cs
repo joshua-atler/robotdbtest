@@ -14,13 +14,13 @@ namespace DotNetCoreSqlDb.Controllers
     public class HomeController : Controller
     {
 
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        /*private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;*/
 
         public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            /*_userManager = userManager;
+            _signInManager = signInManager;*/
         }
 
         public IActionResult Index()
@@ -29,6 +29,11 @@ namespace DotNetCoreSqlDb.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }
