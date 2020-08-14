@@ -8,8 +8,39 @@
         });
 
         $('#inventory-table').dataTable({
-            "columnDefs": [
-                { "orderable": false, "targets": -1 }
+            columnDefs: [
+                { orderable: false, targets: -1 },
+                { className: 'noVis', targets: -1 }
+            ],
+            select: {
+                style: 'single'
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'colvis',
+                    columns: ':not(.noVis)'
+                }, 'excel', 'pdf',
+                {
+                    text: 'Edit',
+                    action: function () {
+                        @*tables.rows({selected: true}).data()*@
+                        var table = $('#inventory-table').DataTable();
+                        @*alert(table.rows('.selected').data()[0][3]);
+                        console.log(table.rows('.selected').data()[0][3]);
+                        alert('Button activated');*@
+                        @*window.location.href = '@Url.Action("SelectEdit", "Inventory")' + '/' + table.rows('.selected').data()[0][0];*@
+                        $.ajax({
+                            url: '@Url.Action("SelectEdit", "Inventory")',
+                            data: {
+                                partName: table.rows('.selected').data()[0][0],
+                            },
+                            success: function (data) {
+                                window.location = data.redirectUrl;
+                            }
+                        });
+                    }
+                }
             ]
         });
     </script>
