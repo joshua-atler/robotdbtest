@@ -3,48 +3,90 @@
 @section Scripts
 {
     <script>
-        $(document).ready(function () {
+        $@*(document).ready(function () {
             $('#inventory-table').DataTable();
+        });*@
+
+        $(document).ready(function () {
+            var table = $('#inventory-table').DataTable({
+                pageLength: 25,
+                columnDefs: [
+                    { orderable: false, targets: -1 },
+                    { className: 'noVis', targets: -1 }
+                ],
+                select: {
+                    style: 'single'
+                },
+                dom: 'Bflrtip',
+                buttons: [
+                    {
+                        text: 'Create',
+                        action: function() {
+
+                        }
+                    },
+                    {
+                        text: 'Edit',
+                        action: function () {
+                            @*tables.rows({selected: true}).data()*@
+                            var table = $('#inventory-table').DataTable();
+                            @*alert(table.rows('.selected').data()[0][3]);
+                            console.log(table.rows('.selected').data()[0][3]);
+                            alert('Button activated');*@
+                            @*window.location.href = '@Url.Action("SelectEdit", "Inventory")' + '/' + table.rows('.selected').data()[0][0];*@
+                            $.ajax({
+                                url: '@Url.Action("SelectEdit", "Inventory")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][0],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
+                    },
+                    {
+                        text: 'Delete',
+                        action: function () {
+
+                        }
+                    }
+                ]
+            });
+
+            new $.fn.dataTable.Buttons(table, {
+                buttons: [
+                    {
+                        extend: 'colvis', text: 'Select columns',
+                        columns: ':not(.noVis)'
+                    }, 'excel', 'pdf',
+                ]
+            });
+            
+            table.buttons(1, null).container().appendTo(
+                table.table().container()
+            );
         });
 
-        $('#inventory-table').dataTable({
-            columnDefs: [
-                { orderable: false, targets: -1 },
-                { className: 'noVis', targets: -1 }
-            ],
-            select: {
-                style: 'single'
-            },
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'colvis',
-                    columns: ':not(.noVis)'
-                }, 'excel', 'pdf',
-                {
-                    text: 'Edit',
-                    action: function () {
-                        @*tables.rows({selected: true}).data()*@
-                        var table = $('#inventory-table').DataTable();
-                        @*alert(table.rows('.selected').data()[0][3]);
-                        console.log(table.rows('.selected').data()[0][3]);
-                        alert('Button activated');*@
-                        @*window.location.href = '@Url.Action("SelectEdit", "Inventory")' + '/' + table.rows('.selected').data()[0][0];*@
-                        $.ajax({
-                            url: '@Url.Action("SelectEdit", "Inventory")',
-                            data: {
-                                partName: table.rows('.selected').data()[0][0],
-                            },
-                            success: function (data) {
-                                window.location = data.redirectUrl;
-                            }
-                        });
-                    }
-                }
-            ]
-        });
+
+
+
     </script>
 }
+
+<style>
+    .dataTables_length {
+        float: right !important;
+        margin-right: 20px !important;
+        margin-top: 2px !important;
+    }
+    .dataTables_filter {
+        float: right !important;
+    }
+    .dataTables_paginate {
+        float: none !important;
+    }
+</style>
 
 @{
     ViewData["Title"] = "Inventory";
@@ -85,7 +127,7 @@
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
             }
-            
+
             <th></th>
         </tr>
     </thead>
@@ -95,14 +137,15 @@
             @if (Context.User.IsInRole("Business") || item.Status == Inventory.InventoryStatus.Approved)
             {
                 string style = "";
-                if(item.Status == Inventory.InventoryStatus.Approved)
+                if (item.Status == Inventory.InventoryStatus.Approved)
                 {
                     style = "background-color:#44ff44";
                 }
-                else if(item.Status == Inventory.InventoryStatus.Submitted)
+                else if (item.Status == Inventory.InventoryStatus.Submitted)
                 {
                     style = "background-color:#ffff44";
-                } else if (item.Status == Inventory.InventoryStatus.Rejected)
+                }
+                else if (item.Status == Inventory.InventoryStatus.Rejected)
                 {
                     style = "background-color:#ff4444";
                 }
