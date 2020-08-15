@@ -10,10 +10,10 @@
         $(document).ready(function () {
             var table = $('#inventory-table').DataTable({
                 pageLength: 25,
-                columnDefs: [
+                @*columnDefs: [
                     { orderable: false, targets: -1 },
                     { className: 'noVis', targets: -1 }
-                ],
+                ],*@
                 select: {
                     style: 'single'
                 },
@@ -21,8 +21,8 @@
                 buttons: [
                     {
                         text: 'Create',
-                        action: function() {
-
+                        action: function () {
+                            window.location.href = '@Url.Action("Create", "Inventory")';
                         }
                     },
                     {
@@ -46,9 +46,31 @@
                         }
                     },
                     {
+                        text: 'Details',
+                        action: function () {
+                            $.ajax({
+                                url: '@Url.Action("SelectDetails", "Inventory")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][0],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
+                    },
+                    {
                         text: 'Delete',
                         action: function () {
-
+                            $.ajax({
+                                url: '@Url.Action("SelectDelete", "Inventory")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][0],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
                         }
                     }
                 ]
@@ -57,19 +79,15 @@
             new $.fn.dataTable.Buttons(table, {
                 buttons: [
                     {
-                        extend: 'colvis', text: 'Select columns',
-                        columns: ':not(.noVis)'
+                        extend: 'colvis', text: 'Select columns'
                     }, 'excel', 'pdf',
                 ]
             });
-            
+
             table.buttons(1, null).container().appendTo(
                 table.table().container()
             );
         });
-
-
-
 
     </script>
 }
@@ -94,9 +112,6 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table" id="inventory-table">
     <thead>
         <tr>
@@ -111,6 +126,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinimumQuantity)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UnitCost)
@@ -128,7 +146,7 @@
                 </th>
             }
 
-            <th></th>
+            @*<th></th>*@
         </tr>
     </thead>
     <tbody>
@@ -162,6 +180,17 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Quantity)
                     </td>
+                    @{ 
+                        string minWarning = "";
+                        if (item.Quantity < item.MinimumQuantity)
+                        {
+                            minWarning = "background-color:#00bfff";
+                        }
+                    }
+                    
+                    <td style="@minWarning">
+                        @Html.DisplayFor(modelItem => item.MinimumQuantity)
+                    </td>
                     <td>
                         $@Html.DisplayFor(modelItem => item.UnitCost)
                     </td>
@@ -178,11 +207,11 @@
                         </td>
                     }
 
-                    <td>
+                    @*<td>
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    </td>
+                    </td>*@
                 </tr>
             }
 

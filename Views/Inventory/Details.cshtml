@@ -35,10 +35,22 @@
             @Html.DisplayFor(model => model.Quantity)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MinimumQuantity)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MinimumQuantity)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UnitCost)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UnitCost)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalCost)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalCost)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Location)

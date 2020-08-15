@@ -9,6 +9,7 @@ using DotNetCoreSqlDb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using System.Text;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DotNetCoreSqlDb.Controllers
 {
@@ -27,6 +28,24 @@ namespace DotNetCoreSqlDb.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Inventory.ToListAsync());
+        }
+
+        public IActionResult SelectDetails(string partName)
+        {
+            Console.WriteLine("Select details");
+
+            Console.WriteLine(partName);
+
+            int partID = queryForId(partName);
+
+            var redirect = Url.Action("Details", "Inventory", new { id = partID });
+
+            return Json(new
+            {
+                redirectUrl = redirect
+            });
+
+            /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
         }
 
         // GET: Inventory/Details/5
@@ -63,7 +82,7 @@ namespace DotNetCoreSqlDb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Business")]
-        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location,Status")] Inventory inventory)
+        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,Quantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
@@ -92,42 +111,7 @@ namespace DotNetCoreSqlDb.Controllers
 
             Console.WriteLine(partName);
 
-            int partID = 0;
-
-            try
-            {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-                builder.DataSource = "robotdbtestserver.database.windows.net";
-                builder.UserID = "jatler";
-                builder.Password = "G1raffe$";
-                builder.InitialCatalog = "coredb";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-                    String sql = String.Format("SELECT id FROM [dbo].[Inventory] WHERE PartName = '{0}'", partName);
-
-                    using (SqlCommand command = new SqlCommand(sql, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Console.WriteLine("reading");
-                                partID = reader.GetInt32(0);
-                                Console.WriteLine(partID);
-                            }
-                        }
-                    }
-                }
-            } catch (SqlException e)
-            {
-                Console.WriteLine("SQL Exception");
-                Console.WriteLine(e.ToString()); 
-            }
-
-            Console.WriteLine("done");
+            int partID = queryForId(partName);
 
             var redirect = Url.Action("Edit", "Inventory", new { id = partID });
 
@@ -172,9 +156,10 @@ namespace DotNetCoreSqlDb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Business")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,UnitCost,Quantity,Location,Status")] Inventory inventory)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,Quantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
         {
             Console.WriteLine("Inventory edit");
+
 
             if (id != inventory.ID)
             {
@@ -183,6 +168,11 @@ namespace DotNetCoreSqlDb.Controllers
 
             if (ModelState.IsValid)
             {
+                if (HttpContext.User.IsInRole("Admin") && inventory.Status == Inventory.InventoryStatus.Submitted)
+                {
+                    inventory.Status = Inventory.InventoryStatus.Approved;
+                }
+
                 try
                 {
                     _context.Update(inventory);
@@ -202,6 +192,24 @@ namespace DotNetCoreSqlDb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(inventory);
+        }
+
+        public IActionResult SelectDelete(string partName)
+        {
+            Console.WriteLine("Select delete");
+
+            Console.WriteLine(partName);
+
+            int partID = queryForId(partName);
+
+            var redirect = Url.Action("Delete", "Inventory", new { id = partID });
+
+            return Json(new
+            {
+                redirectUrl = redirect
+            });
+
+            /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
         }
 
         // GET: Inventory/Delete/5
@@ -244,6 +252,49 @@ namespace DotNetCoreSqlDb.Controllers
         private bool InventoryExists(int id)
         {
             return _context.Inventory.Any(e => e.ID == id);
+        }
+
+        public int queryForId(string partName)
+        {
+            int partID = 0;
+
+            try
+            {
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+
+                builder.DataSource = "robotdbtestserver.database.windows.net";
+                builder.UserID = "jatler";
+                builder.Password = "G1raffe$";
+                builder.InitialCatalog = "coredb";
+
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    connection.Open();
+                    String sql = String.Format("SELECT id FROM [dbo].[Inventory] WHERE PartName = '{0}'", partName);
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Console.WriteLine("reading");
+                                partID = reader.GetInt32(0);
+                                Console.WriteLine(partID);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("SQL Exception");
+                Console.WriteLine(e.ToString());
+            }
+
+            Console.WriteLine("done");
+
+            return partID;
         }
     }
 }

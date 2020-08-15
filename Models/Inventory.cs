@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DotNetCoreSqlDb.Models
 {
@@ -10,6 +11,7 @@ namespace DotNetCoreSqlDb.Models
         public int ID { get; set; }
 
         [Display(Name = "Part Name")]
+        [Required]
         public string PartName { get; set; }
 
         public string SKU { get; set; }
@@ -18,6 +20,10 @@ namespace DotNetCoreSqlDb.Models
         public string PartType { get; set; }
 
         public int Quantity { get; set; }
+
+        [Display(Name = "Minimum Quantity")]
+        [AllowNull]
+        public int MinimumQuantity { get; set; }
 
         [Display(Name = "Unit Cost")]
         public decimal UnitCost { get; set; }
