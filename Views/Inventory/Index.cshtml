@@ -183,8 +183,24 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.PartType)
                     </td>
-                    <td>
+                    @{ 
+                        string suggestWarning = "";
+                        if ((Context.User.IsInRole("Admin") || Context.User.IsInRole("Business")) &&
+                            item.SuggestedQuantity != null && item.Quantity != item.SuggestedQuantity)
+                        {
+                            suggestWarning = "background-color:#ffa500";
+                        }
+                    }
+                    <td style="@suggestWarning">
                         @Html.DisplayFor(modelItem => item.Quantity)
+                        @{ 
+                            if (suggestWarning != "")
+                            {
+                                @("(")
+                                @Html.DisplayFor(modelItem => item.SuggestedQuantity)
+                                @(")")
+                            }
+                        }
                     </td>
                     @{ 
                         string minWarning = "";
@@ -193,7 +209,6 @@
                             minWarning = "background-color:#00bfff";
                         }
                     }
-                    
                     <td style="@minWarning">
                         @Html.DisplayFor(modelItem => item.MinimumQuantity)
                     </td>

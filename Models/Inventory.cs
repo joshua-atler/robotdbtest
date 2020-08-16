@@ -21,9 +21,11 @@ namespace DotNetCoreSqlDb.Models
 
         public int Quantity { get; set; }
 
+        [Display(Name = "Suggested Quantity")]
+        public int? SuggestedQuantity { get; set; }
+
         [Display(Name = "Minimum Quantity")]
-        [AllowNull]
-        public int MinimumQuantity { get; set; }
+        public int? MinimumQuantity { get; set; }
 
         [Display(Name = "Unit Cost")]
         public decimal UnitCost { get; set; }

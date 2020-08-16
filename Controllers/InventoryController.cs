@@ -82,7 +82,7 @@ namespace DotNetCoreSqlDb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Business")]
-        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,Quantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
+        public async Task<IActionResult> Create([Bind("ID,PartName,PartType,SKU,Quantity,SuggestedQuantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
         {
             if (ModelState.IsValid)
             {
@@ -138,6 +138,10 @@ namespace DotNetCoreSqlDb.Controllers
             var inventory = await _context.Inventory.FindAsync(id);
             ViewData["status"] = inventory.Status;
 
+            ViewData["partName"] = inventory.PartName;
+            ViewData["quantity"] = inventory.Quantity;
+            ViewData["unitCost"] = inventory.UnitCost;
+
             if (!HttpContext.User.IsInRole("Admin") && inventory.Status == Inventory.InventoryStatus.Rejected)
             {
                 return RedirectToAction("AccessDenied", "Login");
@@ -156,10 +160,28 @@ namespace DotNetCoreSqlDb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Business")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,Quantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,PartName,PartType,SKU,Quantity,SuggestedQuantity,MinimumQuantity,UnitCost,Location,Status")] Inventory inventory)
         {
             Console.WriteLine("Inventory edit");
 
+            /*inventory.PartName = (string)ViewData["partName"];
+            
+
+            inventory.Quantity = (int)ViewData["quantity"];
+            inventory.UnitCost = (decimal)ViewData["unitCost"];*/
+
+            Console.WriteLine("ID");
+            Console.WriteLine("PartName");
+            Console.WriteLine(inventory.PartName);
+            Console.WriteLine("PartType");
+            Console.WriteLine("SKU");
+            Console.WriteLine("Quantity");
+            Console.WriteLine("SuggestedQuantity");
+            Console.WriteLine(inventory.SuggestedQuantity);
+            Console.WriteLine("MinimumQuantity");
+            Console.WriteLine("UnitCost");
+            Console.WriteLine("Location");
+            Console.WriteLine("Status");
 
             if (id != inventory.ID)
             {
@@ -172,6 +194,8 @@ namespace DotNetCoreSqlDb.Controllers
                 {
                     inventory.Status = Inventory.InventoryStatus.Approved;
                 }
+
+                
 
                 try
                 {
