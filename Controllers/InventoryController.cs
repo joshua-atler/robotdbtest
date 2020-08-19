@@ -138,14 +138,16 @@ namespace DotNetCoreSqlDb.Controllers
             var inventory = await _context.Inventory.FindAsync(id);
             ViewData["status"] = inventory.Status;
 
-            ViewData["partName"] = inventory.PartName;
             ViewData["quantity"] = inventory.Quantity;
-            ViewData["unitCost"] = inventory.UnitCost;
+            ViewData["suggestedQuantity"] = inventory.SuggestedQuantity;
+
 
             if (!HttpContext.User.IsInRole("Admin") && inventory.Status == Inventory.InventoryStatus.Rejected)
             {
                 return RedirectToAction("AccessDenied", "Login");
             }
+
+
 
             if (inventory == null)
             {
@@ -195,7 +197,10 @@ namespace DotNetCoreSqlDb.Controllers
                     inventory.Status = Inventory.InventoryStatus.Approved;
                 }
 
-                // add input hidden for status
+                if (HttpContext.User.IsInRole("Admin"))
+                {
+                    inventory.SuggestedQuantity = null;
+                }
                 
 
                 try
