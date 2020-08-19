@@ -195,6 +195,7 @@ namespace DotNetCoreSqlDb.Controllers
                     inventory.Status = Inventory.InventoryStatus.Approved;
                 }
 
+                // add input hidden for status
                 
 
                 try

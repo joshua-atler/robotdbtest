@@ -41,7 +41,7 @@ namespace DotNetCoreSqlDb
 
                 // config.SignIn.RequireConfirmedAccount = true;
             } 
-            ).AddRoles<IdentityRole>().AddEntityFrameworkStores<MyDatabaseContext>();
+            ).AddRoles<IdentityRole>().AddEntityFrameworkStores<MyDatabaseContext>().AddDefaultTokenProviders();
 
 
             services.AddAuthorization(options =>

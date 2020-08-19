@@ -47,7 +47,7 @@ namespace DotNetCoreSqlDb.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Login(string usertype, string password)
+        public async Task<IActionResult> Login(string usertype, string password, string returnUrl)
         {
 
             /*await _roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -92,11 +92,31 @@ namespace DotNetCoreSqlDb.Controllers
 
                 if (signInResult.Succeeded)
                 {
+
+                    // EDIT PASSWORD
+
+                    /*var newPassword = "myNewPassword";
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await _userManager.ResetPasswordAsync(user, token, "AdminPassword");*/
+                    TempData["login"] = "success";
                     Console.WriteLine("Sign in succeeded");
-                    return RedirectToAction("Index", "Home");
+                    Console.WriteLine("Return Url");
+                    Console.WriteLine(returnUrl);
+
+
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    } else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+  
                 }
                 else
                 {
+                    TempData["login"] = "fail";
+                    Console.WriteLine(TempData["login"]);
                     Console.WriteLine("Sign in failed");
                     return RedirectToAction("Index", "Login");
                 }
