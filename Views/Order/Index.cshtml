@@ -1,0 +1,195 @@
+﻿@model IEnumerable<DotNetCoreSqlDb.Models.Order>
+
+@section Scripts
+{
+    <script>
+        $@*(document).ready(function () {
+            $('#inventory-table').DataTable();
+        });*@
+
+        $(document).ready(function () {
+            var table = $('#order-table').DataTable({
+                pageLength: 25,
+                @*columnDefs: [
+                    { orderable: false, targets: -1 },
+                    { className: 'noVis', targets: -1 }
+                ],*@
+                select: {
+                    style: 'single'
+                },
+                dom: 'Bflrtip',
+                buttons: [
+                    {
+                        text: 'Create',
+                        action: function () {
+                            window.location.href = '@Url.Action("Create", "Order")';
+                        }
+                    },
+                    {
+                        text: 'Edit',
+                        action: function () {
+                            @*tables.rows({selected: true}).data()*@
+                            var table = $('#order-table').DataTable();
+                            @*alert(table.rows('.selected').data()[0][3]);
+                            console.log(table.rows('.selected').data()[0][3]);
+                            alert('Button activated');*@
+                            @*window.location.href = '@Url.Action("SelectEdit", "Inventory")' + '/' + table.rows('.selected').data()[0][0];*@
+                            $.ajax({
+                                url: '@Url.Action("SelectEdit", "Order")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][3],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
+                    },
+                    {
+                        text: 'Details',
+                        action: function () {
+                            $.ajax({
+                                url: '@Url.Action("SelectDetails", "Order")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][3],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
+                    },
+                    {
+                        text: 'Delete',
+                        action: function () {
+                            $.ajax({
+                                url: '@Url.Action("SelectDelete", "Order")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][3],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
+                    }
+                ]
+            });
+
+            new $.fn.dataTable.Buttons(table, {
+                buttons: [
+                    {
+                        extend: 'colvis', text: 'Select columns'
+                    }, 'excel', 'pdf',
+                ]
+            });
+
+            table.buttons(1, null).container().appendTo(
+                table.table().container()
+            );
+        });
+
+    </script>
+}
+
+<style>
+    .dataTables_length {
+        float: right !important;
+        margin-right: 20px !important;
+        margin-top: 2px !important;
+    }
+    .dataTables_filter {
+        float: right !important;
+    }
+    .dataTables_paginate {
+        float: none !important;
+    }
+    button.dt-button.active {
+        background: #00bfff !important;
+    }
+    .dt-button-collection {
+        top: -405px !important;
+    }
+</style>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table" id="order-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderingStudent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vendor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PartName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Justification)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+
+            @*<th></th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderingStudent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PartName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Justification)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            
+
+        }
+    </tbody>
+</table>
