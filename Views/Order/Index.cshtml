@@ -37,7 +37,7 @@
                             $.ajax({
                                 url: '@Url.Action("SelectEdit", "Order")',
                                 data: {
-                                    partName: table.rows('.selected').data()[0][3],
+                                    partName: table.rows('.selected').data()[0][4],
                                 },
                                 success: function (data) {
                                     window.location = data.redirectUrl;
@@ -51,7 +51,7 @@
                             $.ajax({
                                 url: '@Url.Action("SelectDetails", "Order")',
                                 data: {
-                                    partName: table.rows('.selected').data()[0][3],
+                                    partName: table.rows('.selected').data()[0][4],
                                 },
                                 success: function (data) {
                                     window.location = data.redirectUrl;
@@ -65,7 +65,7 @@
                             $.ajax({
                                 url: '@Url.Action("SelectDelete", "Order")',
                                 data: {
-                                    partName: table.rows('.selected').data()[0][3],
+                                    partName: table.rows('.selected').data()[0][4],
                                 },
                                 success: function (data) {
                                     window.location = data.redirectUrl;
@@ -128,6 +128,9 @@
                 @Html.DisplayNameFor(model => model.OrderingStudent)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.RoboticsTeam)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Vendor)
             </th>
             <th>
@@ -156,40 +159,58 @@
         </tr>
     </thead>
     <tbody>
+
         @foreach (var item in Model)
         {
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderingStudent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vendor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Link)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Justification)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Timestamp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderingStudent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoboticsTeam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vendor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Link)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Justification)
+                </td>
+                @{
+                    string statusStyle = "";
+                    if (item.Status == Order.OrderStatus.Requested)
+                    {
+                        statusStyle = "background-color: #00bfff";
+                    } else if (item.Status == Order.OrderStatus.Ordered)
+                    {
+                        statusStyle = "background-color: #ffff44";
+                    } else if (item.Status == Order.OrderStatus.Received)
+                    {
+                        statusStyle = "background-color: #44ff44";
+                    }
+                 }
+                <td style="@statusStyle">
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+         }
             
-
-        }
-    </tbody>
+        </tbody>
 </table>

@@ -15,6 +15,9 @@ namespace DotNetCoreSqlDb.Models
         [Display(Name = "Ordering Student")]
         public string OrderingStudent { get; set; }
 
+        [Display(Name = "Team")]
+        public Team RoboticsTeam { get; set; }
+
         public string Vendor { get; set; }
 
         [Display(Name = "Part Name")]
@@ -34,6 +37,14 @@ namespace DotNetCoreSqlDb.Models
         public OrderStatus Status { get; set; }
 
         public OrderSubmittedStatus SubmittedStatus { get; set; }
+
+        public enum Team
+        {
+            [Display(Name = "MidKnight")]
+            MidKnight,
+            [Display(Name = "Mayhem")]
+            Mayhem
+        }
 
         public enum OrderStatus
         {
