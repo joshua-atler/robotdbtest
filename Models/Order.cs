@@ -40,8 +40,8 @@ namespace DotNetCoreSqlDb.Models
 
         public enum Team
         {
-            [Display(Name = "MidKnight")]
-            MidKnight,
+            [Display(Name = "Madness")]
+            Madness,
             [Display(Name = "Mayhem")]
             Mayhem
         }

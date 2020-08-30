@@ -72,6 +72,21 @@
                                 }
                             });
                         }
+                    },
+                    {
+                        text: 'Add to Inventory',
+                        className: 'addToInventoryButton',
+                        action: function () {
+                            $.ajax({
+                                url: '@Url.Action("SelectAddToInventory", "Order")',
+                                data: {
+                                    partName: table.rows('.selected').data()[0][4],
+                                },
+                                success: function (data) {
+                                    window.location = data.redirectUrl;
+                                }
+                            });
+                        }
                     }
                 ]
             });
@@ -110,6 +125,13 @@
     .dt-button-collection {
         top: -405px !important;
     }
+    .addToInventoryButton {
+        background: linear-gradient(to bottom, rgba(44, 255, 44, 1) 0%, rgba(40,175,40,1) 100%) !important;
+        border-color: black !important;
+        border-width: 2px !important;
+        @*background: rgba(44, 255, 44, 0.5) !important;*@
+        margin-left: 50px !important;
+    } 
 </style>
 
 @{
@@ -137,6 +159,9 @@
                 @Html.DisplayNameFor(model => model.PartName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.SKU)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Link)
             </th>
             <th>
@@ -162,54 +187,59 @@
 
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Timestamp)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderingStudent)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RoboticsTeam)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Vendor)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PartName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Link)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Justification)
-                </td>
-                @{
-                    string statusStyle = "";
-                    if (item.Status == Order.OrderStatus.Requested)
-                    {
-                        statusStyle = "background-color: #00bfff";
-                    } else if (item.Status == Order.OrderStatus.Ordered)
-                    {
-                        statusStyle = "background-color: #ffff44";
-                    } else if (item.Status == Order.OrderStatus.Received)
-                    {
-                        statusStyle = "background-color: #44ff44";
-                    }
-                 }
-                <td style="@statusStyle">
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderingStudent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoboticsTeam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PartName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SKU)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Justification)
+            </td>
+            @{
+                string statusStyle = "";
+                if (item.Status == Order.OrderStatus.Requested)
+                {
+                    statusStyle = "background-color: #00bfff";
+                }
+                else if (item.Status == Order.OrderStatus.Ordered)
+                {
+                    statusStyle = "background-color: #ffff44";
+                }
+                else if (item.Status == Order.OrderStatus.Received)
+                {
+                    statusStyle = "background-color: #44ff44";
+                }
+            }
+            <td style="@statusStyle">
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+        </tr>
          }
             
         </tbody>

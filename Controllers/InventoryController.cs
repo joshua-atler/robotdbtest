@@ -286,7 +286,7 @@ namespace DotNetCoreSqlDb.Controllers
 
         public int queryForId(string partName)
         {
-            int partID = 0;
+            int partID = -1;
 
             try
             {

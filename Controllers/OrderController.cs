@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using System.Text;
 using System.Reflection.Metadata.Ecma335;
+using System.Drawing.Printing;
 
 namespace DotNetCoreSqlDb.Controllers
 {
@@ -23,7 +24,7 @@ namespace DotNetCoreSqlDb.Controllers
             _context = context;
         }
 
-        // GET: Inventory
+        // GET: Order
         [Authorize(Roles = "Team")]
         public async Task<IActionResult> Index()
         {
@@ -48,7 +49,7 @@ namespace DotNetCoreSqlDb.Controllers
             /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
         }
 
-        // GET: Inventory/Details/5
+        // GET: Order/Details/5
         [Authorize(Roles = "Team")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -67,7 +68,7 @@ namespace DotNetCoreSqlDb.Controllers
             return View(order);
         }
 
-        // GET: Inventory/Create
+        // GET: Order/Create
         [Authorize(Roles = "Team")]
         public IActionResult Create()
         {
@@ -76,7 +77,7 @@ namespace DotNetCoreSqlDb.Controllers
             return View();
         }
 
-        // POST: Inventory/Create
+        // POST: Order/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -90,9 +91,131 @@ namespace DotNetCoreSqlDb.Controllers
                 Console.WriteLine("status");
                 Console.WriteLine(order.Status);
 
+                /*Inventory inventoryTest = new Inventory();
+
+                inventoryTest.PartName = order.PartName;
+                inventoryTest.Quantity = order.Quantity;
+
+                _context.Add(inventoryTest);*/
+
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(order);
+        }
+
+        public IActionResult SelectAddToInventory(string partName)
+        {
+            Console.WriteLine("Add To Inventory");
+
+            Console.WriteLine(partName);
+
+            int partID = queryForId(partName);
+
+            var redirect = Url.Action("AddToInventory", "Order", new { id = partID });
+
+            return Json(new
+            {
+                redirectUrl = redirect
+            });
+
+            /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
+        }
+
+        [Authorize(Roles = "Business")]
+        public async Task<IActionResult> AddToInventory(int? id)
+        {
+
+            Console.WriteLine("AddToInventory");
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _context.Order.FindAsync(id);
+
+            ViewData["status"] = order.Status;
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return View(order);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Business")]
+        public async Task<IActionResult> AddToInventory(int id, [Bind("ID,Timestamp,OrderingStudent,RoboticsTeam,Vendor,PartName,SKU,Link,Quantity,Price,Justification,Status")] Order order)
+        {
+            Console.WriteLine("Add to Inventory Post");
+
+
+            if (id != order.ID)
+            {
+                Console.WriteLine("NOT FOUND");
+                return NotFound();
+            }
+
+            Console.WriteLine("FOUND");
+
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    _context.Update(order);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrderExists(order.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                Inventory inventory = new Inventory();
+
+                inventory.PartName = order.PartName;
+                InventoryController ic = new InventoryController(_context);
+                int partID = -1;
+                partID = ic.queryForId(inventory.PartName);
+                
+                Console.WriteLine("PART ID");
+                Console.WriteLine(partID);
+
+                if(partID == -1)
+                {
+                    inventory.SKU = order.SKU;
+                    inventory.UnitCost = order.Price;
+                    inventory.Quantity = order.Quantity;
+                    inventory.Status = Inventory.InventoryStatus.Approved;
+
+                    _context.Add(inventory);
+                    await _context.SaveChangesAsync();
+                } else
+                {
+                    Console.WriteLine("UPDATING EXISTING ITEM");
+                    var updatedInventory = await _context.Inventory.FindAsync(partID);
+                    Console.WriteLine(updatedInventory.Quantity);
+                    Console.WriteLine(order.Quantity);
+                    updatedInventory.Quantity += order.Quantity;
+                    Console.WriteLine(updatedInventory.Quantity);
+
+                    _context.Update(updatedInventory);
+                    await _context.SaveChangesAsync();
+                }
+                
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
@@ -116,7 +239,7 @@ namespace DotNetCoreSqlDb.Controllers
             /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
         }
 
-        // GET: Inventory/Edit/5
+        // GET: Order/Edit/5
         [Authorize(Roles = "Business")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -149,7 +272,7 @@ namespace DotNetCoreSqlDb.Controllers
             return View(order);
         }
 
-        // POST: Inventory/Edit/5
+        // POST: Order/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -159,24 +282,6 @@ namespace DotNetCoreSqlDb.Controllers
         {
             Console.WriteLine("Order edit");
 
-            /*inventory.PartName = (string)ViewData["partName"];
-            
-
-            inventory.Quantity = (int)ViewData["quantity"];
-            inventory.UnitCost = (decimal)ViewData["unitCost"];*/
-
-            /*Console.WriteLine("ID");
-            Console.WriteLine("PartName");
-            Console.WriteLine(inventory.PartName);
-            Console.WriteLine("PartType");
-            Console.WriteLine("SKU");
-            Console.WriteLine("Quantity");
-            Console.WriteLine("SuggestedQuantity");
-            Console.WriteLine(inventory.SuggestedQuantity);
-            Console.WriteLine("MinimumQuantity");
-            Console.WriteLine("UnitCost");
-            Console.WriteLine("Location");
-            Console.WriteLine("Status");*/
 
             if (id != order.ID)
             {
@@ -184,17 +289,7 @@ namespace DotNetCoreSqlDb.Controllers
             }
 
             if (ModelState.IsValid)
-            {
-                /*if (HttpContext.User.IsInRole("Admin") && inventory.Status == Inventory.InventoryStatus.Submitted)
-                {
-                    inventory.Status = Inventory.InventoryStatus.Approved;
-                }
-
-                if (HttpContext.User.IsInRole("Admin"))
-                {
-                    inventory.SuggestedQuantity = null;
-                }*/
-                
+            {          
 
                 try
                 {
@@ -235,7 +330,7 @@ namespace DotNetCoreSqlDb.Controllers
             /*return RedirectToAction("Edit", "Inventory", new { id = partID });*/
         }
 
-        // GET: Inventory/Delete/5
+        // GET: Order/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -282,7 +377,7 @@ namespace DotNetCoreSqlDb.Controllers
             Console.WriteLine("queryForId");
             Console.WriteLine(partName);
 
-            int partID = 0;
+            int partID = -1;
 
             try
             {
