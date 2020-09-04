@@ -36,8 +36,6 @@ namespace DotNetCoreSqlDb.Models
 
         public OrderStatus Status { get; set; }
 
-        public OrderSubmittedStatus SubmittedStatus { get; set; }
-
         public enum Team
         {
             [Display(Name = "Madness")]
@@ -53,17 +51,9 @@ namespace DotNetCoreSqlDb.Models
             [Display(Name = "Ordered")]
             Ordered,
             [Display(Name = "Received")]
-            Received
-        }
-
-        public enum OrderSubmittedStatus
-        {
-            [Display(Name = "Submitted")]
-            Submitted,
-            [Display(Name = "Approved")]
-            Approved,
-            [Display(Name = "Rejected")]
-            Rejected
+            Received,
+            [Display(Name = "Added")]
+            Added
         }
 
 

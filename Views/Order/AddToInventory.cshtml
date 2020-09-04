@@ -9,6 +9,10 @@
 <div>
     <h4>Inventory</h4>
     <hr />
+    @if ((Order.OrderStatus)ViewData["status"] == Order.OrderStatus.Added)
+    {
+        <p style="color: red">Order has already been added to the inventory.</p>
+    }
     @if ((Order.OrderStatus)ViewData["status"] != Order.OrderStatus.Received)
     {
         <p style="color: red">Order must be marked as received before it can be added to inventory.</p>
@@ -100,10 +104,10 @@
         <input type="hidden" asp-for="Status" />
         @if ((Order.OrderStatus)ViewData["status"] != Order.OrderStatus.Received)
         {
-            <input type="submit" value="AddToInventory" class="btn btn-primary" disabled/>
+            <input type="submit" value="Add To Inventory" class="btn btn-primary" disabled/>
         } else
         {
-            <input type="submit" value="AddToInventory" class="btn btn-primary" />
+            <input type="submit" value="Add To Inventory" name="Add To Inventory" class="btn btn-primary" />
         }
         | <a asp-action="Index">Back to List</a>
     </form>

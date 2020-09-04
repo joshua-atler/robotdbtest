@@ -235,6 +235,10 @@
                 {
                     statusStyle = "background-color: #44ff44";
                 }
+                else if (item.Status == Order.OrderStatus.Added)
+                {
+                    statusStyle = "background-color: #ffa500";
+                }
             }
             <td style="@statusStyle">
                 @Html.DisplayFor(modelItem => item.Status)

@@ -114,6 +114,9 @@ namespace DotNetCoreSqlDb.Controllers
 
             int partID = queryForId(partName);
 
+            Console.WriteLine("partID");
+            Console.WriteLine(partID);
+
             var redirect = Url.Action("AddToInventory", "Order", new { id = partID });
 
             return Json(new
@@ -129,6 +132,8 @@ namespace DotNetCoreSqlDb.Controllers
         {
 
             Console.WriteLine("AddToInventory");
+            Console.WriteLine("Order ID");
+            Console.WriteLine(id);
 
             if (id == null)
             {
@@ -164,6 +169,8 @@ namespace DotNetCoreSqlDb.Controllers
 
             if (ModelState.IsValid)
             {
+
+                order.Status = Order.OrderStatus.Added;
 
                 try
                 {
