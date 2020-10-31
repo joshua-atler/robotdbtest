@@ -30,7 +30,9 @@ namespace DotNetCoreSqlDb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<MyDatabaseContext>(options => options.UseSqlServer("Server=tcp:robotdbtestserver.database.windows.net,1433;Database=coreDB;User ID=jatler;Password=G1raffe$;Encrypt=true;Connection Timeout=30;"));
+            services.AddDbContext<MyDatabaseContext>(options => options.UseSqlServer("Server=tcp:robotdbtestserver.database.windows.net,1433;Database=coreDB;User ID=jatler;Password=TKA_R0bot1c$_db;Encrypt=true;Connection Timeout=30;"));
+
+            // new password: TKA_R0bot1c$_db
 
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
             {
